@@ -1,4 +1,6 @@
-﻿namespace HomeBanking.Models
+﻿using System.Collections.ObjectModel;
+
+namespace HomeBanking.Models
 {
     public class Client
     {
@@ -8,6 +10,7 @@
         public string Email { get; set; }
         public string Password { get; set; }
         
+        public Collection<Account> Accounts { get; set; }
 
     }
 }
