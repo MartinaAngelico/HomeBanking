@@ -1,6 +1,6 @@
 ﻿using HomeBanking.Models;
 using Microsoft.EntityFrameworkCore.Query;
-using static HomeBanking.Repositories.IRepositoryBase;
+//using static HomeBanking.Repositories.IRepositoryBase;
 using System.Linq.Expressions;
 using System.Linq;
 using System;
@@ -8,12 +8,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HomeBanking.Repositories
 {
-    public abstract class RepositoryBase<T> : IRepositoryBase<T> where T : class
+    public abstract class RepositoryBase<T> : IRepositoryBase<T> where T : class 
+        //:significan implementa de
     {
         protected HomeBankingContext RepositoryContext { get; set; }
-        public RepositoryBase(HomeBankingContext repositoryContext)
+        //accesibilidad--> protected, HomebankingContext-->tipo de dato, nombre de la variable: RepositoryContext 
+        public RepositoryBase(HomeBankingContext repositoryContext) //constructor 
         {
-            this.RepositoryContext = repositoryContext;
+            this.RepositoryContext = repositoryContext; 
         }
         public IQueryable<T> FindAll()
         {
@@ -22,9 +24,10 @@ namespace HomeBanking.Repositories
         public IQueryable<T> FindAll(Func<IQueryable<T>, IIncludableQueryable<T, object>> includes = null)
         {
             IQueryable<T> queryable = this.RepositoryContext.Set<T>();
-            if (includes != null)
+                                     //trae los datos de la base de datos
+            if (includes != null)   //el include es un metodo 
             {
-                queryable = includes(queryable);
+                queryable = includes(queryable); //el include nos dice que agregamos informacion
             }
             return queryable.AsNoTrackingWithIdentityResolution();
         }

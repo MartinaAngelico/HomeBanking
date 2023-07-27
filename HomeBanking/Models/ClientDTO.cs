@@ -5,7 +5,7 @@ namespace HomeBanking.Models
 {
     public class ClientDTO
     {
-        [JsonIgnore]
+        [JsonIgnore] 
         public long Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }

@@ -5,10 +5,8 @@ namespace HomeBanking.Repositories
 {
     public interface IClientRepository
     {
-            IEnumerable<Client> GetAllClients();
-            void Save(Client client);
+            IEnumerable<Client> GetAllClients(); //metodo que me traiga todos los clintes
+            void Save(Client client); 
             Client FindById(long id);
-
-        
     }
 }

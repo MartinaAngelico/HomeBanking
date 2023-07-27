@@ -53,10 +53,10 @@ namespace HomeBanking
 
             app.UseAuthorization();
 
-            app.UseEndpoints(endpoints =>
+            app.UseEndpoints(endpoints => //puntos de acceso de la aplicacion
             {
-                endpoints.MapRazorPages();
-                endpoints.MapControllers();
+                endpoints.MapRazorPages(); //Razor es una tecnologia para crear paginas web con C# con HTML
+                endpoints.MapControllers(); //aGREGAMOS ESTA LINEA PARA QUE SE PUEDAN USAR LOS CONTROLADORES
             });
         }
     }
