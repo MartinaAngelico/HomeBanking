@@ -77,7 +77,7 @@ namespace HomeBanking.Controllers
                         Balance = ac.Balance,
                         CreationDate = ac.CreationDate,
                         Number = ac.Number
-                    }).ToList()
+                    }).ToList()  
                 };
                 return Ok(clientDTO);
             }
@@ -85,6 +85,7 @@ namespace HomeBanking.Controllers
             {
                 return StatusCode(500, ex.Message);
             }
+            //
         }
     }
 }
