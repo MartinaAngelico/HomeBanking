@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace HomeBanking.Models
 {
@@ -9,7 +11,9 @@ namespace HomeBanking.Models
         public DateTime CreationDate { get; set; }
         public double Balance { get; set; } 
         public Client Client { get; set; }  
-        public long ClientId { get; set; }  
+        public long ClientId { get; set; }
+
+        public ICollection<Transaction> Transactions { get; set; }
 
     }
 }

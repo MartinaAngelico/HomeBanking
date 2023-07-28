@@ -30,10 +30,8 @@ namespace HomeBanking.Models
                 {
                     context.Clients.Add(client); //le paso el nombre de la variable
                 }
+                context.SaveChanges();
             }
-
-
-            //context.SaveChanges();
 
             if (!context.Accounts.Any())
             {
@@ -42,8 +40,8 @@ namespace HomeBanking.Models
                 {
                     var Accounts = new Account[]
                     {
-                        new Account{ClientId=accountMarti.Id, CreationDate=DateTime.Now, Number=string.Empty, Balance= 1000},
-                        new Account{ClientId= accountMarti.Id, CreationDate=DateTime.Now, Number="uno", Balance= 2000},
+                        new Account{ClientId=accountMarti.Id, CreationDate=DateTime.Now, Number="001", Balance= 1000},
+                        new Account{ClientId= accountMarti.Id, CreationDate=DateTime.Now, Number="002", Balance= 2000},
 
                     };
 
@@ -58,8 +56,8 @@ namespace HomeBanking.Models
                 {
                     var Accounts = new Account[]
                     {
-                        new Account{ClientId=accountFran.Id, CreationDate=DateTime.Now, Number="tres", Balance= 1001},
-                        new Account{ClientId= accountFran.Id, CreationDate=DateTime.Now, Number="uno", Balance= 2002},
+                        new Account{ClientId=accountFran.Id, CreationDate=DateTime.Now, Number="003", Balance= 1001},
+                        new Account{ClientId= accountFran.Id, CreationDate=DateTime.Now, Number="004", Balance= 2002},
 
                     };
 
@@ -69,6 +67,43 @@ namespace HomeBanking.Models
                     }
                 }
                 context.SaveChanges();
+            }
+
+            if (!context.Transactions.Any())
+            {
+                var account1 = context.Accounts.FirstOrDefault(c => c.Number == "001");
+                if (account1 != null)
+                {
+                    var transactions = new Transaction[]
+                    {
+                        new Transaction { AccountId= account1.Id, Amount = 10000, Date= DateTime.Now.AddHours(-5), Description = "Transferencia reccibida", Type = TransactionType.CREDIT.ToString() },
+                        new Transaction { AccountId= account1.Id, Amount = -2000, Date= DateTime.Now.AddHours(-6), Description = "Compra en tienda mercado libre", Type = TransactionType.DEBIT.ToString() },
+                        new Transaction { AccountId= account1.Id, Amount = -3000, Date= DateTime.Now.AddHours(-7), Description = "Compra en tienda xxxx", Type = TransactionType.DEBIT.ToString() },
+
+                    };
+                    foreach (Transaction transaction in transactions)
+                    {
+                        context.Transactions.Add(transaction);
+                    }
+                    context.SaveChanges();
+                }
+
+                var account3 = context.Accounts.FirstOrDefault(c => c.Number == "002");
+                if (account3 != null)
+                {
+                    var transactions = new Transaction[]
+                    {
+                        new Transaction { AccountId= account3.Id, Amount = 89000, Date= DateTime.Now.AddHours(-5), Description = "Transferencia no recibida", Type = TransactionType.CREDIT.ToString() },
+                        new Transaction { AccountId= account3.Id, Amount = 45000, Date= DateTime.Now.AddHours(-6), Description = "Compra en tienda mercado libre y envio realizado", Type = TransactionType.DEBIT.ToString() },
+                        new Transaction { AccountId= account3.Id, Amount = -16500, Date= DateTime.Now.AddHours(-7), Description = "Compra en tienda Madame Tricots", Type = TransactionType.DEBIT.ToString() },
+
+                    };
+                    foreach (Transaction transaction in transactions)
+                    {
+                        context.Transactions.Add(transaction);
+                    }
+                    context.SaveChanges();
+                }
             }
         }
     }

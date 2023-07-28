@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace HomeBanking.Models
 {
@@ -10,7 +11,7 @@ namespace HomeBanking.Models
         public string Email { get; set; }
         public string Password { get; set; }
         
-        public Collection<Account> Accounts { get; set; }
+        public ICollection<Account> Accounts { get; set; }
 
     }
 }
