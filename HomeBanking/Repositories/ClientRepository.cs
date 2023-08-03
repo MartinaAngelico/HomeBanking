@@ -18,6 +18,7 @@ namespace HomeBanking.Repositories
                 .Include(client => client.Accounts) //el include es un metodo.Le estoy diciendo "De los clientes, incluime las cuentas del cliente"
                 .Include(client=> client.ClientLoans) //"De los clientes, incluime los prestamos de ellos"
                 .ThenInclude(cl => cl.Loan) //"Por cada cliente Loan, incluime su respectivo prestamo
+                .Include(client => client.Cards)
                 .FirstOrDefault(); //quiero el primero (client)
         }
         public IEnumerable<Client> GetAllClients()
@@ -26,6 +27,7 @@ namespace HomeBanking.Repositories
                 .Include(client => client.Accounts)
                 .Include(client=> client.ClientLoans)
                 .ThenInclude(cl=> cl.Loan)
+                .Include(client => client.Cards)
                 .ToList(); //lo transforma en una lista
         }
 

@@ -115,7 +115,7 @@ namespace HomeBanking.Models
                     new Loan {Name = "Personal", MaxAmount = 100000, Payments = "6,12,24"},
                     new Loan {Name = "Automotriz", MaxAmount = 300000, Payments = "6,12,24,36"},
                 };
-                foreach(Loan loan in loans)
+                foreach (Loan loan in loans)
                 {
                     context.Loans.Add(loan);
                 }
@@ -127,7 +127,7 @@ namespace HomeBanking.Models
                 {
                     //usaremos los 3 tipos de prestamos
                     var loan1 = context.Loans.FirstOrDefault(I => I.Name == "Hipotecario");
-                    if (loan1 != null) 
+                    if (loan1 != null)
                     {
                         var clientLoan1 = new ClientLoan
                         {
@@ -152,7 +152,7 @@ namespace HomeBanking.Models
                         context.ClientLoans.Add(clientLoan2);
                     }
 
-                    var loan3 = context.Loans.FirstOrDefault(I => I.Name == "Automotriz"); 
+                    var loan3 = context.Loans.FirstOrDefault(I => I.Name == "Automotriz");
                     if (loan3 != null)
                     {
                         var clientLoan3 = new ClientLoan
@@ -212,6 +212,46 @@ namespace HomeBanking.Models
                 }
                 //guardo los prestamos
                 context.SaveChanges();
+            }
+
+            if (!context.Cards.Any())
+            {
+                //buscamos al unico cliente
+                var client1 = context.Clients.FirstOrDefault(c => c.Email == "martiangelico@gmail.com");
+                if (client1 != null)
+                {
+                    //le agregamos 2 tarjetas de crédito una GOLD y una TITANIUM, de tipo DEBITO Y CREDITO RESPECTIVAMENTE
+                    var cards = new Card[]
+                    {
+                        new Card
+                        {
+                            ClientId = client1.Id,
+                            CardHolder = client1.FirstName + " " + client1.LastName,
+                            Type = CardType.DEBIT.ToString(),
+                            Color = CardColor.GOLD.ToString(),
+                            Number = "3325-6745-7876-4445",
+                            Cvv = 990,
+                            FromDate = DateTime.Now,
+                            ThruDate = DateTime.Now.AddYears(4),
+                        },
+                        new Card
+                        {
+                            ClientId = client1.Id,
+                            CardHolder = client1.FirstName + " " + client1.LastName,
+                            Type = CardType.CREDIT.ToString(),
+                            Color = CardColor.TITANIUM.ToString(),
+                            Number = "2234-6745-552-7888",
+                            Cvv = 750,
+                            FromDate = DateTime.Now,
+                            ThruDate = DateTime.Now.AddYears(5),
+                        },
+                    };
+                    foreach (Card card in cards)
+                    {
+                        context.Cards.Add(card);
+                    }
+                    context.SaveChanges();
+                }
             }
         }
     }
