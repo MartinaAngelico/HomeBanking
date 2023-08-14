@@ -27,8 +27,15 @@ namespace HomeBanking.Repositories
 
         public void Save(Account account)
         {
-            Create(account); //crea el cliente en la base de datos
-            SaveChanges(); //guarda los cambios
+            if (account.Id == 0) //si el id es 0 es una nueva cuenta
+            {
+                Create(account);
+            }
+            else
+            {
+                Update(account);
+            }
+            SaveChanges();
         }
 
         public IEnumerable<Account> GetAccountByClient(long clientId)
@@ -36,6 +43,18 @@ namespace HomeBanking.Repositories
             return FindByCondition(account => account.ClientId == clientId)
             .Include(account => account.Transactions)
             .ToList();
+        }
+
+        public Account FindByNumber(string number)
+        {
+            return FindByCondition(account => account.Number.ToUpper() == number.ToUpper())
+            .Include(account => account.Transactions)
+            .FirstOrDefault();
+        }
+
+        public IEnumerable<Account> GetAccountsByClient(long clientId)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

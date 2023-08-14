@@ -61,7 +61,7 @@ namespace HomeBanking.Controllers
             }
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("accounts/{id}")]
         public IActionResult Get(long id)
         {
             try

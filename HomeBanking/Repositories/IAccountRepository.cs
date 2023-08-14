@@ -9,5 +9,7 @@ namespace HomeBanking.Repositories
        // public IEnumerable<Account> Accounts { get; private set; }
         void Save(Account account);
         Account FindById(long id);
+        IEnumerable<Account> GetAccountsByClient(long clientId);
+        Account FindByNumber(string number); //para buscar una cuenta por el numero de cuenta
     }
 }
