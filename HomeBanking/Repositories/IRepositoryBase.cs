@@ -12,10 +12,10 @@ namespace HomeBanking.Repositories
         IQueryable<T> FindAll();
         IQueryable<T> FindAll(Func<IQueryable<T>, IIncludableQueryable<T, object>> includes = null); //me permite agregar mas informacion/datos
         IQueryable<T> FindByCondition(Expression<Func<T, bool>> expression); 
-        void Create(T entity); //guardar
+        void Create(T entity); //guardar/insertar
         void Update(T entity); //actualizar
         void Delete(T entity); //borrar
-        void SaveChanges();                  
+        void SaveChanges();  //guarda los cambios en la base de datos       
 
     }
 }

@@ -15,12 +15,13 @@ namespace HomeBanking.Repositories
 
         public Client FindByEmail(string email)
         {
-            return FindByCondition(client => client.Email.ToUpper() == email.ToUpper())
+            return FindByCondition(client => client.Email.ToUpper() == email.ToUpper()) //la condicion es que el emial convertido a mayuscula sea = al emali que le llega x parametro tambien convertido a mayuscula
              .Include(client => client.Accounts)
+                .ThenInclude(cl => cl.Transactions)
              .Include(client => client.ClientLoans)
                  .ThenInclude(cl => cl.Loan)
              .Include(client => client.Cards)
-             .FirstOrDefault();
+             .FirstOrDefault(); //para que devuelva uno solo
         }
 
         public Client FindById(long id)
@@ -28,7 +29,7 @@ namespace HomeBanking.Repositories
             return FindByCondition(client => client.Id == id) //de los clientes quiero el cliente cuyo Id sea = al que recibo por parametro
                 .Include(client => client.Accounts) //el include es un metodo.Le estoy diciendo "De los clientes, incluime las cuentas del cliente"
                 .Include(client=> client.ClientLoans) //"De los clientes, incluime los prestamos de ellos"
-                .ThenInclude(cl => cl.Loan) //"Por cada cliente Loan, incluime su respectivo prestamo
+                  .ThenInclude(cl => cl.Loan) //"Por cada cliente Loan, incluime su respectivo prestamo
                 .Include(client => client.Cards)
                 .FirstOrDefault(); //quiero el primero (client)
         }
@@ -37,7 +38,7 @@ namespace HomeBanking.Repositories
             return FindAll() 
                 .Include(client => client.Accounts)
                 .Include(client=> client.ClientLoans)
-                .ThenInclude(cl=> cl.Loan)
+                  .ThenInclude(cl=> cl.Loan)
                 .Include(client => client.Cards)
                 .ToList(); //lo transforma en una lista
         }

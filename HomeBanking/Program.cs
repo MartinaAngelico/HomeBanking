@@ -22,7 +22,7 @@ namespace HomeBanking
                 var services = scope.ServiceProvider;
                 try
                 {
-                    var context = services.GetRequiredService<HomeBankingContext>();
+                    var context = services.GetRequiredService<HomeBankingContext>(); //para que se inicie el DbInitializer
                     DbInitializer.Initialize(context);
                 }
                 catch(Exception ex) 

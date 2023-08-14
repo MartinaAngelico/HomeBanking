@@ -30,5 +30,12 @@ namespace HomeBanking.Repositories
             Create(account); //crea el cliente en la base de datos
             SaveChanges(); //guarda los cambios
         }
+
+        public IEnumerable<Account> GetAccountByClient(long clientId)
+        {
+            return FindByCondition(account => account.ClientId == clientId)
+            .Include(account => account.Transactions)
+            .ToList();
+        }
     }
 }

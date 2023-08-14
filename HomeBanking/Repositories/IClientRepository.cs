@@ -8,6 +8,6 @@ namespace HomeBanking.Repositories
             IEnumerable<Client> GetAllClients(); //metodo que me traiga todos los clintes
             void Save(Client client); 
             Client FindById(long id);
-            Client FindByEmail(string email); //retorne un cliente pasándole como parámetro su email
+            Client FindByEmail(string email); //retorne un cliente pasándole como parámetro su email, corrobora si el el usuario
     }
 }

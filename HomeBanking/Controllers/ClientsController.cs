@@ -11,17 +11,16 @@ namespace HomeBanking.Controllers
     [Route("api/[controller]")]
     [ApiController]
     public class ClientsController : ControllerBase
-                 //hereda los controles
+    //hereda los controles
     {
-        private IClientRepository _clientRepository;
-        //necesitamos un repositorio 
-
-        public ClientsController(IClientRepository clientRepository) //constructor
+        private IClientRepository _clientRepository; //se declara de forma privada la INTERFAZ
+        private IAccountRepository _accountRepository;
+        public ClientsController(IClientRepository clientRepository, IAccountRepository accountRepository) //constructor  que usa dicha INTERFAZ 
         {
             _clientRepository = clientRepository;
+            _accountRepository = accountRepository;
         }
-
-        [HttpGet] //cuando hagamos un peticion de tipo get al controlador va a responder con el sgte metodo
+    [HttpGet] //cuando hagamos un peticion de tipo get al controlador va a responder con el sgte metodo
         public IActionResult Get()
         {
             try
@@ -86,7 +85,7 @@ namespace HomeBanking.Controllers
                         Name = cl.Loan.Name,
                         Amount = cl.Amount,
                         Payments = int.Parse(cl.Payments)
-                    }).ToList(),
+                    }).ToList(), //devuelve los prestamos asociados al cliente
 
                     Cards = client.Cards.Select(c => new CardDTO
                     {
@@ -108,12 +107,14 @@ namespace HomeBanking.Controllers
             }
         }
 
-        [HttpGet("current")]
+        [HttpGet("current")] //nos trae nuestra info en base a los datos que proporcionemos (mail y contraseña)
         public IActionResult GetCurrent()
         {
             try
             {
-                string email = User.FindFirst("Client") != null ? User.FindFirst("Client").Value : string.Empty;
+                string email = User.FindFirst("Client") != null ? User.FindFirst("Client").Value : string.Empty; //traemos el mail de la base de datos 
+                              //este USER proviene del sistema de autenticacion que tenemos para manejar en Back, llamamos un objeto especial que tiene la info de un cliente como usuario de nuestro Back 
+                              
                 if (email == string.Empty)
                 {
                     return Forbid();
@@ -121,12 +122,12 @@ namespace HomeBanking.Controllers
 
                 Client client = _clientRepository.FindByEmail(email);
 
-                if (client == null)
+                if (client == null) //lo buscamos como cliente en nuestra base de datos
                 {
                     return Forbid();
                 }
 
-                var clientDTO = new ClientDTO
+                var clientDTO = new ClientDTO //si lo encontramos en la base de datos, traemos todos los datos
                 {
                     Id = client.Id,
                     Email = client.Email,
@@ -139,7 +140,7 @@ namespace HomeBanking.Controllers
                         CreationDate = ac.CreationDate,
                         Number = ac.Number
                     }).ToList(),
-                    Credits = client.ClientLoans.Select(cl => new ClientLoanDTO
+                    Credits = client.ClientLoans.Select(cl => new ClientLoanDTO //a los loans le llamamos credits
                     {
                         Id = cl.Id,
                         LoanId = cl.LoanId,
@@ -160,7 +161,67 @@ namespace HomeBanking.Controllers
                     }).ToList()
                 };
 
-                return Ok(clientDTO);
+                return Ok(clientDTO); //muestra el cliente en el Front
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpPost] //CREAR UN NUEVO CLIENTE
+        //un POST y no un GET porque enviamos datos del Front al Back y el GET es para solicitar datos del Back
+        public IActionResult Post([FromBody] Client client)
+        {
+            try
+            {
+                //validamos datos antes
+                if (String.IsNullOrEmpty(client.Email) || String.IsNullOrEmpty(client.Password) || String.IsNullOrEmpty(client.FirstName) || String.IsNullOrEmpty(client.LastName))
+                    return StatusCode(403, "datos inválidos"); //el 403 es = que el Forbid 
+
+                //buscamos si ya existe el usuario
+                Client user = _clientRepository.FindByEmail(client.Email); //buscamos en el repositorio
+                if (user != null)
+                {
+                    return StatusCode(403, "Email está en uso");
+                }
+                
+                Client newClient = new Client //creamos nuevo objeto de tipo cliente
+                {
+                    Email = client.Email,
+                    Password = client.Password,
+                    FirstName = client.FirstName,
+                    LastName = client.LastName,
+                };
+                _clientRepository.Save(newClient); //usamos el repo para utilizar el metodo SAVE 
+
+                Random random = new Random();
+                string numeroAleatorio = random.Next(0, 100000000).ToString("D8");
+                Account newAccount = new Account
+                {
+                    Number = "VIN-" + numeroAleatorio,
+                    CreationDate = DateTime.Now,
+                    Balance = 0,
+                    ClientId = newClient.Id,
+                };
+                _accountRepository.Save(newAccount);
+
+                ClientDTO newCDTO = new ClientDTO
+                {
+                    Id = newClient.Id,
+                    Email = newClient.Email,
+                    FirstName = newClient.FirstName,
+                    LastName = newClient.LastName,
+                    Accounts = newClient.Accounts.Select(account => new AccountDTO
+                    {
+                        Id = account.Id,
+                        Number = account.Number,
+                        CreationDate = account.CreationDate,
+                        Balance = account.Balance,
+                    }).ToList()
+                };
+                return Created("", newCDTO); //le devolvemos el cliente 
+
             }
             catch (Exception ex)
             {

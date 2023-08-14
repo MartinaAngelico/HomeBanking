@@ -1,3 +1,4 @@
+using HomeBanking.Controllers;
 using HomeBanking.Models;
 using HomeBanking.Repositories;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -34,21 +35,23 @@ namespace HomeBanking
             services.AddDbContext<HomeBankingContext>(options =>
             options.UseSqlServer(Configuration.GetConnectionString("HomeBankingConexion")));
 
-            services.AddScoped<IClientRepository, ClientRepository>();
+            services.AddScoped<IClientRepository, ClientRepository>(); //indicamos que se agregue en el contenedor de inyeccion de dependencia
             services.AddScoped<IAccountRepository, AccountRepository>();
+            services.AddScoped<AccountsController>();
+            services.AddScoped<ICardRepository, CardRepository>();
 
             //autenticacion
-            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                 .AddCookie(options =>
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)//un esquema es un contexto, la cookie forma parte del esquema
+                 .AddCookie(options => //metodo que recibe una funcion
                  {
                      options.ExpireTimeSpan = TimeSpan.FromMinutes(10); //tiempo de la expiracion de la cookie
                      options.LoginPath = new PathString("/index.html"); //indica que ruta debe redirigir el servidor cuando no existe una sesion
                  });
 
             //autorización
-            services.AddAuthorization(options =>
+            services.AddAuthorization(options => //este servicio dice quien puede acceder al BackEnd, bloqueamos todas las peticiones exeptuando las que tienen permiso
             {
-                options.AddPolicy("ClientOnly", policy => policy.RequireClaim("Client"));
+                options.AddPolicy("ClientOnly", policy => policy.RequireClaim("Client")); //solo dejamos entrar a los que sean clientes. El requireclaim, es un pedido/reclamo
             });
         }
 
@@ -68,7 +71,7 @@ namespace HomeBanking
 
             app.UseRouting();
 
-            //le decimos que use autenticacion
+            //le decimos que use autenticacion, que utilice todas las configuraciones que hicimos en el service
             app.UseAuthentication();
             //autorizacion
             app.UseAuthorization();
