@@ -40,6 +40,8 @@ namespace HomeBanking
             services.AddScoped<AccountsController>();
             services.AddScoped<ICardRepository, CardRepository>();
             services.AddScoped<ITransactionRepository, TransactionRepository>();
+            services.AddScoped<IClientLoanRepository, ClientLoanRepository>();
+            services.AddScoped<ILoanRepository, LoanRepository>();
 
             //autenticacion
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)//un esquema es un contexto, la cookie forma parte del esquema
